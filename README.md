@@ -78,26 +78,3 @@ Presence is implemented using a dedicated `presence` collection in Firestore:
   "lastSeen": "timestamp",
   "cursor": { "row": "number", "col": "number" }
 }
-```
-
-## 🚀 Deployment Instructions
-
-1. **Clone the repository.**
-2. **Create a Firebase Project** at [console.firebase.google.com](https://console.firebase.google.com).
-3. **Enable Firestore and Firebase Auth** (Google Provider).
-4. **Configure Environment Variables**:
-   Create a `.env.local` file with:
-   ```env
-   NEXT_PUBLIC_FIREBASE_API_KEY=your_api_key
-   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-   NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_id
-   NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
-   ```
-5. **Install Dependencies**: `npm install`
-6. **Run Locally**: `npm run dev`
-7. **Deploy to Vercel**: Push to GitHub and connect to Vercel, adding the same environment variables.
-
----
-Built with ♥ by Antigravity AI for Trademarkia.
