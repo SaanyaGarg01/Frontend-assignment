@@ -68,10 +68,10 @@ export default function DocPage() {
 
   if (authLoading || docLoading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-white">
+      <div className="flex h-screen items-center justify-center bg-[#fafafa]">
         <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
-          <p className="text-gray-500 font-medium">Opening your spreadsheet...</p>
+          <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
+          <p className="text-gray-500 font-medium tracking-wide">Opening your spreadsheet...</p>
         </div>
       </div>
     );
@@ -89,17 +89,17 @@ export default function DocPage() {
   }
 
   return (
-    <div className="flex h-screen flex-col bg-slate-50 overflow-hidden font-sans">
+    <div className="flex h-screen flex-col bg-[#fafafa] overflow-hidden font-sans">
       {/* Document Navbar */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex h-16 items-center justify-between border-b border-slate-200 bg-white/80 backdrop-blur-md px-4 shadow-sm z-40 relative"
+        className="flex h-16 items-center justify-between border-b border-gray-200 bg-white/90 backdrop-blur-md px-4 shadow-sm z-40 relative"
       >
         <div className="flex items-center gap-4">
           <Link 
             href="/dashboard" 
-            className="rounded-full p-2 hover:bg-gray-100 transition-colors text-gray-600"
+            className="rounded-full p-2 hover:bg-gray-100 transition-colors text-gray-500 hover:text-gray-900"
             title="Back to Dashboard"
           >
             <ArrowLeft className="h-5 w-5" />
@@ -145,7 +145,7 @@ export default function DocPage() {
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="flex h-7 items-center justify-between border-t border-slate-200 bg-white px-4 text-[11px] font-medium text-slate-500 shadow-[0_-2px_10px_rgba(0,0,0,0.02)] z-40 relative"
+        className="flex h-8 items-center justify-between border-t border-gray-200 bg-white px-4 text-[11px] font-semibold text-gray-500 z-40 relative shadow-[0_-2px_4px_rgba(0,0,0,0.02)]"
       >
         <div className="flex items-center gap-4">
           <span className="flex items-center gap-1.5">

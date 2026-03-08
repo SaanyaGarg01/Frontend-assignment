@@ -99,9 +99,9 @@ export const Cell = React.memo(({
       onClick={() => onSelect(row, col)}
       onDoubleClick={handleDoubleClick}
       className={cn(
-        "cell group relative flex items-center overflow-hidden min-h-[30px] px-2 text-[13px] font-[500] text-slate-700 transition-all cursor-cell",
-        isSelected && !isActive && "bg-blue-50/60",
-        isActive && !isEditing && "active-cell ring-inset",
+        "cell group relative flex items-center overflow-hidden text-[13px] font-[500] text-gray-800 cursor-cell",
+        isSelected && !isActive && "bg-indigo-50/80",
+        isActive && !isEditing && "active-cell",
         isEditing && "editing-cell",
         data?.format?.bold && "font-bold",
         data?.format?.italic && "italic",
@@ -114,7 +114,7 @@ export const Cell = React.memo(({
       {isEditing ? (
         <input
           ref={inputRef}
-          className="absolute inset-0 w-full h-full border-none outline-none px-2 z-20 text-[13px] bg-transparent text-blue-900 font-semibold selection:bg-blue-200"
+          className="absolute inset-0 w-full h-full border-none outline-none font-[500] px-[7px] z-20 text-[13px] bg-transparent text-indigo-900 selection:bg-indigo-200"
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           onBlur={handleBlur}

@@ -66,7 +66,7 @@ export const Toolbar = ({ docId, title, writeState, onExport, activeCell, active
             {editingTitle ? (
               <input
                 autoFocus
-                className="text-lg font-semibold outline-none ring-2 ring-blue-500 rounded px-1"
+                className="text-lg font-bold outline-none ring-2 ring-indigo-500 rounded px-1.5 py-0.5 bg-white shadow-sm"
                 value={localTitle}
                 onChange={(e) => setLocalTitle(e.target.value)}
                 onBlur={handleTitleSubmit}
@@ -77,17 +77,17 @@ export const Toolbar = ({ docId, title, writeState, onExport, activeCell, active
                 className="group flex items-center gap-2 cursor-pointer rounded px-1 -ml-1 hover:bg-slate-100 transition-colors"
                 onClick={() => setEditingTitle(true)}
               >
-                <h1 className="text-lg font-semibold text-slate-800">
+                <h1 className="text-lg font-bold text-gray-900 tracking-tight">
                   {title}
                 </h1>
-                <Edit2 className="h-3.5 w-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Edit2 className="h-4 w-4 text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
             )}
             
             <div className="flex items-center gap-3 text-[11px] text-gray-500">
               <div className="flex items-center gap-1">
                 {writeState === "saving" && (
-                  <><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-blue-500 shadow-[0_0_4px_rgba(59,130,246,0.5)]" /> Saving...</>
+                  <><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-indigo-500 shadow-[0_0_4px_rgba(99,102,241,0.5)]" /> Saving...</>
                 )}
                 {writeState === "saved" && (
                   <><CheckCircle className="h-3 w-3 text-emerald-500" /> Saved</>
@@ -106,9 +106,9 @@ export const Toolbar = ({ docId, title, writeState, onExport, activeCell, active
         <div className="flex items-center gap-2">
           <button 
             onClick={onExport}
-            className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 hover:shadow-sm transition-all border border-slate-200/60"
+            className="flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-1.5 text-xs font-semibold text-gray-700 hover:bg-gray-200 hover:shadow-sm transition-all border border-gray-200"
           >
-            <Download className="h-3.5 w-3.5" />
+            <Download className="h-4 w-4" />
             Export CSV
           </button>
         </div>
@@ -151,7 +151,7 @@ export const Toolbar = ({ docId, title, writeState, onExport, activeCell, active
           />
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 px-4 text-xs font-semibold text-slate-400 bg-slate-50 border border-slate-200 rounded-full py-1 ml-4 shadow-inner">
+        <div className="hidden sm:flex items-center gap-2 px-4 text-xs font-bold text-gray-500 bg-gray-100 border border-gray-200 rounded-lg py-1.5 ml-4 shadow-inner">
           Cell: {coordToExcelRef(activeCell.row, activeCell.col)}
         </div>
       </div>
@@ -165,7 +165,7 @@ const ToolbarButton = ({ icon, active = false, disabled = false, onClick }: any)
     onClick={onClick}
     className={cn(
       "flex h-8 w-8 items-center justify-center rounded transition-colors",
-      active ? "bg-blue-100 text-blue-600" : "text-gray-600 hover:bg-gray-200",
+      active ? "bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200" : "text-gray-600 hover:bg-gray-100",
       disabled && "opacity-30 cursor-not-allowed"
     )}
   >

@@ -13,6 +13,8 @@ let isLoggingIn = false;
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSigningIn, setIsSigningIn] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -68,9 +70,14 @@ export function useAuth() {
   const loginWithGoogle = async () => {
     if (isLoggingIn) return;
     isLoggingIn = true;
+    setIsSigningIn(true);
+    setAuthError(null);
     try {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
+      if (error.code === "auth/unauthorized-domain") {
+        setAuthError(error.code);
+      }
       const ignoredErrors = [
         "auth/cancelled-popup-request",
         "auth/popup-closed-by-user",
@@ -78,11 +85,13 @@ export function useAuth() {
         "auth/internal-error",
         "auth/configuration-not-found"
       ];
-      if (!ignoredErrors.includes(error.code)) {
+      if (!ignoredErrors.includes(error.code) && error.code !== "auth/unauthorized-domain") {
         console.error("Login failed", error);
+        setAuthError(error.message || "Failed to sign in");
       }
     } finally {
       isLoggingIn = false;
+      setIsSigningIn(false);
     }
   };
 
@@ -97,5 +106,5 @@ export function useAuth() {
     setUser({ ...user, name });
   };
 
-  return { user, loading, loginWithGoogle, logout, setDisplayName };
+  return { user, loading, isSigningIn, authError, loginWithGoogle, logout, setDisplayName };
 }

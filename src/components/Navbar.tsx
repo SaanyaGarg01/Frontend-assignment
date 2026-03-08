@@ -1,35 +1,32 @@
 "use client";
 
-import { LogOut, FileText } from "lucide-react";
-import { User } from "@/types";
+import { LogOut, FileSpreadsheet } from "lucide-react";
+import { User as UserType } from "@/types";
 
 interface NavbarProps {
-  user: User;
+  user: UserType;
   onLogout: () => void;
 }
 
 export const Navbar = ({ user, onLogout }: NavbarProps) => {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-indigo-100/50 bg-white/80 backdrop-blur-xl px-4 sm:px-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.02)]">
-      <div className="flex items-center gap-3">
-        <div className="rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 p-2 shadow-sm shadow-indigo-200">
-          <FileText className="h-5 w-5 text-white" />
-        </div>
-        <span className="text-xl font-bold tracking-tight text-slate-800">Sheetia</span>
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white/80 backdrop-blur px-6">
+      <div className="flex items-center gap-2">
+        <FileSpreadsheet className="h-6 w-6 text-indigo-600" />
+        <span className="text-xl font-bold tracking-tight text-gray-900">Sheetia</span>
       </div>
       
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-3 pr-4 border-r border-slate-200">
+        <div className="flex items-center gap-3 pr-4 border-r border-gray-200">
           <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-slate-700">{user.name}</p>
-            <p className="text-xs text-slate-500">{user.email}</p>
+            <p className="text-sm font-semibold text-gray-700">{user.name}</p>
           </div>
           {user.photoURL ? (
-            <img src={user.photoURL} className="h-9 w-9 rounded-full ring-2 ring-white shadow-sm" alt={user.name} />
+            <img src={user.photoURL} className="h-8 w-8 rounded-full ring-2 ring-gray-100" alt={user.name} />
           ) : (
             <div 
-              className="flex h-9 w-9 items-center justify-center rounded-full text-white font-bold shadow-sm ring-2 ring-white"
-              style={{ backgroundColor: user.color || '#6366f1' }}
+              className="flex h-8 w-8 items-center justify-center rounded-full text-white font-bold text-sm"
+              style={{ backgroundColor: user.color || '#4f46e5' }}
             >
               {user.name && user.name.length > 0 ? user.name[0].toUpperCase() : 'U'}
             </div>
@@ -37,7 +34,7 @@ export const Navbar = ({ user, onLogout }: NavbarProps) => {
         </div>
         <button 
           onClick={onLogout}
-          className="text-slate-400 hover:text-rose-500 hover:bg-rose-50 p-2 rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-rose-500/20"
+          className="text-gray-500 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-colors"
           title="Sign out"
         >
           <LogOut className="h-5 w-5" />

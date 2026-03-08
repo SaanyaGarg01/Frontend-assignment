@@ -45,58 +45,46 @@ body {
 }
 
 .cell {
-  border-right: 1px solid rgb(var(--border) / 0.8);
-  border-bottom: 1px solid rgb(var(--border) / 0.8);
-  min-height: 25px;
-  padding: 2px 4px;
+  border-right: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  min-height: 32px;
+  padding: 0 8px;
   outline: none;
-  background-color: white;
-  transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  background-color: #ffffff;
 }
 
 .cell:hover:not(:focus):not(.active-cell) {
   background-color: #f8fafc;
 }
 
-.cell-header {
-  background-color: #f1f5f9;
-  color: #475569;
-  font-weight: 600;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: sticky;
-  z-index: 10;
-}
-
-.cell-header-top {
-  top: 0;
-}
-
-.cell-header-left {
-  left: 0;
-  z-index: 20;
-}
-
-.cell:focus, .active-cell {
-  border: 2px solid rgb(var(--primary));
-  padding: 1px 3px;
+.active-cell {
+  outline: 2px solid #4f46e5;
+  outline-offset: -2px;
   z-index: 5;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  background-color: #eef2ff !important;
 }
 
-@keyframes cellEditPulse {
-  0% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4); }
-  50% { box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1); }
-  100% { box-shadow: 0 0 0 0px rgba(59, 130, 246, 0.4); }
+/* Fill Handle for Active Cell */
+.active-cell::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background-color: #4f46e5;
+  border: 1px solid white;
+  z-index: 6;
+  cursor: crosshair;
 }
 
 .editing-cell {
-  animation: cellEditPulse 2s infinite;
-  border: 2px solid rgb(var(--primary));
+  outline: 2px solid #4f46e5;
+  outline-offset: -2px;
   z-index: 6;
-  background-color: white;
+  background-color: white !important;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.editing-cell::after {
+  display: none;
 }

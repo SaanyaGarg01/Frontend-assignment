@@ -89,13 +89,13 @@ export const SpreadsheetGrid = ({ cells, onUpdateCell, onCursorMove, activeCell,
         style={{ gridTemplateColumns, borderSpacing: 0 }}
       >
         {/* Top-left corner */}
-        <div className="sticky top-0 left-0 z-30 flex h-8 items-center justify-center border-r border-b border-slate-300 bg-slate-100/90 backdrop-blur-sm shadow-[2px_2px_0px_rgba(0,0,0,0.02)]" />
+        <div className="sticky top-0 left-0 z-30 flex h-8 items-center justify-center border-r border-b border-gray-300 bg-gray-50 shadow-[2px_2px_0px_rgba(0,0,0,0.02)]" />
 
         {/* Column Headers */}
         {Array.from({ length: DEFAULT_COLS }).map((_, i) => (
           <div 
             key={`col-${i}`} 
-            className="sticky top-0 z-20 flex h-8 items-center justify-center border-r border-b border-slate-300 bg-slate-100/90 backdrop-blur-sm text-xs font-semibold text-slate-500 shadow-[0px_2px_0px_rgba(0,0,0,0.02)] select-none group"
+            className="sticky top-0 z-20 flex h-8 items-center justify-center border-r border-b border-gray-300 bg-gray-50 text-xs font-semibold text-gray-500 shadow-[0px_2px_0px_rgba(0,0,0,0.02)] select-none group"
             style={{ width: colWidths[i] }}
           >
             {String.fromCharCode(65 + i)}
@@ -110,7 +110,7 @@ export const SpreadsheetGrid = ({ cells, onUpdateCell, onCursorMove, activeCell,
         {Array.from({ length: DEFAULT_ROWS }).map((_, r) => (
           <React.Fragment key={`row-${r}`}>
             {/* Row Header */}
-            <div className="sticky left-0 z-10 flex h-[30px] items-center justify-center border-r border-b border-slate-300 bg-slate-100/90 backdrop-blur-sm text-[10px] font-bold text-slate-400 select-none shadow-[2px_0px_0px_rgba(0,0,0,0.02)]">
+            <div className="sticky left-0 z-10 flex h-[32px] items-center justify-center border-r border-b border-gray-300 bg-gray-50 text-[10px] font-bold text-gray-400 select-none shadow-[2px_0px_0px_rgba(0,0,0,0.02)]">
               {r + 1}
             </div>
 
