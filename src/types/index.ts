@@ -22,6 +22,8 @@ export interface CellData {
     bold?: boolean;
     italic?: boolean;
     textAlign?: "left" | "center" | "right";
+    color?: string;
+    backgroundColor?: string;
   };
   updatedBy: string;
   updatedAt: any;
@@ -44,3 +46,13 @@ export interface Presence {
 }
 
 export type WriteState = "saving" | "saved" | "offline" | "error";
+
+export interface ActivityEvent {
+  id: string;
+  docId: string;
+  userName: string;
+  userColor: string;
+  action: string;
+  cellId?: string;
+  timestamp: any;
+}

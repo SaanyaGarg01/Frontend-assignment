@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { CellData } from "@/types";
+import { CellData, Presence } from "@/types";
 import { cn } from "@/lib/utils";
+import { coordToExcelRef } from "@/lib/formulaParser";
 
 interface CellProps {
   row: number;
@@ -10,6 +11,7 @@ interface CellProps {
   data: CellData | undefined;
   isSelected: boolean;
   isActive: boolean;
+  foreignPresences?: Presence[];
   onSelect: (row: number, col: number) => void;
   onUpdate: (row: number, col: number, value: string) => void;
   onNavigate: (direction: string) => void;
@@ -21,6 +23,7 @@ export const Cell = React.memo(({
   data,
   isSelected,
   isActive,
+  foreignPresences = [],
   onSelect,
   onUpdate,
   onNavigate,
@@ -135,6 +138,24 @@ export const Cell = React.memo(({
       {isFormula && !isEditing && (
         <div className="absolute top-0 right-0 w-0 h-0 border-t-[6px] border-l-[6px] border-t-purple-500 border-l-transparent drop-shadow-sm" />
       )}
+
+      {/* Foreign Presence Cursors */}
+      {foreignPresences.map((p, i) => (
+        <React.Fragment key={p.userId}>
+          <div 
+            className="absolute inset-0 pointer-events-none min-h-full min-w-full z-[4]"
+            style={{ boxShadow: `inset 0 0 0 2px ${p.color}` }}
+          />
+          {i === 0 && (
+            <div 
+              className="absolute -top-[20px] right-0 px-2 py-0.5 text-[10px] font-bold text-white rounded-[3px] shadow-md pointer-events-none z-10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{ backgroundColor: p.color }}
+            >
+              {p.name.split(' ')[0]} is editing {coordToExcelRef(row, col)}
+            </div>
+          )}
+        </React.Fragment>
+      ))}
     </div>
   );
 });

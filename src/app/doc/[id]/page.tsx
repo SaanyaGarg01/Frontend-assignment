@@ -6,6 +6,10 @@ import { usePresence } from "@/hooks/usePresence";
 import { SpreadsheetGrid } from "@/components/SpreadsheetGrid";
 import { Toolbar } from "@/components/Toolbar";
 import { PresenceBar } from "@/components/PresenceBar";
+import { DocSkeleton } from "@/components/Skeletons";
+import { FormulaBar } from "@/components/FormulaBar";
+import { ActivityPanel } from "@/components/ActivityPanel";
+import { useActivity } from "@/hooks/useActivity";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -19,8 +23,16 @@ export default function DocPage() {
   const { user, loading: authLoading } = useAuth();
   const { document, cells, writeState, loading: docLoading, updateCell } = useDocument(id, user?.id || "");
   const { presences, updateCursor } = usePresence(id, user);
+  const { activities, logActivity } = useActivity(id);
 
   const [activeCell, setActiveCell] = useState<{ row: number; col: number }>({ row: 0, col: 0 });
+
+  const handleUpdateCellWrapper = async (row: number, col: number, value: string) => {
+    await updateCell(row, col, value);
+    if (user && value !== cells[`${row}-${col}`]?.value) {
+      logActivity(user.name, user.color, `updated cell`, coordToExcelRef(row, col));
+    }
+  };
 
   const handleFormatCell = (formatKey: string, value: any) => {
     if (!cells) return;
@@ -67,14 +79,7 @@ export default function DocPage() {
   };
 
   if (authLoading || docLoading) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-[#fafafa]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-10 w-10 animate-spin text-indigo-600" />
-          <p className="text-gray-500 font-medium tracking-wide">Opening your spreadsheet...</p>
-        </div>
-      </div>
-    );
+    return <DocSkeleton />;
   }
 
   if (!document) {
@@ -130,15 +135,29 @@ export default function DocPage() {
         </div>
       </motion.div>
 
-      {/* Editor Grid Container */}
-      <div className="flex-1 overflow-hidden">
-        <SpreadsheetGrid 
-          cells={cells} 
-          onUpdateCell={updateCell}
-          onCursorMove={updateCursor}
-          activeCell={activeCell}
-          setActiveCell={setActiveCell}
-        />
+      {/* Formula Bar */}
+      <FormulaBar 
+        activeCellData={cells[`${activeCell.row}-${activeCell.col}`]} 
+        activeCellId={`${activeCell.row}-${activeCell.col}`}
+        onUpdateFormula={(val) => handleUpdateCellWrapper(activeCell.row, activeCell.col, val)}
+      />
+
+      {/* Editor Main Content Area */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* Spreadsheet Grid container */}
+        <div className="flex-1 overflow-hidden">
+          <SpreadsheetGrid 
+            cells={cells}
+            presences={presences}
+            onUpdateCell={handleUpdateCellWrapper}
+            onCursorMove={updateCursor}
+            activeCell={activeCell}
+            setActiveCell={setActiveCell}
+          />
+        </div>
+        
+        {/* Activity Panel Sidebar */}
+        <ActivityPanel activities={activities} />
       </div>
 
       {/* Footer / Status Bar */}

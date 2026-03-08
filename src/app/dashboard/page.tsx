@@ -13,6 +13,7 @@ import { Navbar } from "@/components/Navbar";
 import { DocumentCard } from "@/components/DocumentCard";
 import { AuthCard } from "@/components/AuthCard";
 import { MarketingPanel } from "@/components/MarketingPanel";
+import { DashboardSkeleton } from "@/components/Skeletons";
 
 export default function Dashboard() {
   const { user, loading: authLoading, isSigningIn, authError, loginWithGoogle, logout } = useAuth();
@@ -78,20 +79,7 @@ export default function Dashboard() {
   };
 
   if ((authLoading && !isSigningIn) || (user && loading)) {
-    return (
-      <div className="flex h-screen items-center justify-center bg-slate-50">
-        <motion.div 
-          animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.5, 1, 0.5] }} 
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="flex flex-col items-center gap-4"
-        >
-          <div className="rounded-2xl bg-blue-600 p-4 shadow-lg shadow-blue-500/30">
-            <FileSpreadsheet className="h-8 w-8 text-white" />
-          </div>
-          <p className="text-sm font-semibold tracking-wide text-slate-500 uppercase">Loading Workspace</p>
-        </motion.div>
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
 
   if (!user) {

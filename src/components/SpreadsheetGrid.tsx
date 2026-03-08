@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { Cell } from "./Cell";
-import { CellsState, CellData } from "@/types";
+import { CellsState, CellData, Presence } from "@/types";
 import { coordToCellId, coordToExcelRef } from "@/lib/formulaParser";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 
 interface SpreadsheetGridProps {
   cells: CellsState;
+  presences: Presence[];
   onUpdateCell: (row: number, col: number, value: string) => void;
   onCursorMove: (row: number, col: number) => void;
   activeCell: { row: number; col: number };
@@ -18,7 +19,7 @@ interface SpreadsheetGridProps {
 const DEFAULT_ROWS = 50;
 const DEFAULT_COLS = 26; // A to Z
 
-export const SpreadsheetGrid = ({ cells, onUpdateCell, onCursorMove, activeCell, setActiveCell }: SpreadsheetGridProps) => {
+export const SpreadsheetGrid = ({ cells, presences, onUpdateCell, onCursorMove, activeCell, setActiveCell }: SpreadsheetGridProps) => {
   const [colWidths, setColWidths] = useState<number[]>(new Array(DEFAULT_COLS).fill(120));
   const gridRef = useRef<HTMLDivElement>(null);
 
@@ -117,6 +118,8 @@ export const SpreadsheetGrid = ({ cells, onUpdateCell, onCursorMove, activeCell,
             {/* Cells */}
             {Array.from({ length: DEFAULT_COLS }).map((_, c) => {
               const cellId = coordToCellId(r, c);
+              const activePresences = presences.filter(p => p.cursor?.row === r && p.cursor?.col === c);
+              
               return (
                 <Cell
                   key={cellId}
@@ -125,6 +128,7 @@ export const SpreadsheetGrid = ({ cells, onUpdateCell, onCursorMove, activeCell,
                   data={cells[cellId]}
                   isSelected={activeCell.row === r || activeCell.col === c}
                   isActive={activeCell.row === r && activeCell.col === c}
+                  foreignPresences={activePresences}
                   onSelect={handleSelect}
                   onUpdate={onUpdateCell}
                   onNavigate={handleNavigate}
