@@ -5,6 +5,7 @@ import { Presence, User } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Users } from "lucide-react";
+import { coordToExcelRef } from "@/lib/formulaParser";
 
 interface PresenceBarProps {
   presences: Presence[];
@@ -18,13 +19,13 @@ export const PresenceBar = ({ presences, currentUser }: PresenceBarProps) => {
     .sort((a, b) => a.userId.localeCompare(b.userId));
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3">
       <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
         <Users className="h-3.5 w-3.5" />
-        <span>{others.length + (currentUser ? 1 : 0)}</span>
+        <span className="font-semibold">{others.length + (currentUser ? 1 : 0)} active</span>
       </div>
       
-      <div className="flex -space-x-2 overflow-hidden items-center bg-gray-50 rounded-full px-2 py-1 border border-gray-200">
+      <div className="flex -space-x-2 overflow-hidden items-center bg-gray-50 rounded-full px-3 py-1.5 border border-gray-200">
         <AnimatePresence mode="popLayout">
           {others.map((presence) => (
             <motion.div
@@ -50,15 +51,15 @@ export const PresenceBar = ({ presences, currentUser }: PresenceBarProps) => {
                 </div>
               )}
               
-              {/* Tooltip with Live Indicator */}
-              <div className="absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs text-white group-hover:block z-50 shadow-lg pointer-events-none">
+              {/* Enhanced Tooltip with Cell Reference */}
+              <div className="absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2.5 text-xs text-white group-hover:block z-50 shadow-xl pointer-events-none">
                 <div className="flex items-center gap-2">
                   <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-semibold">{presence.name}</span>
+                  <span className="font-bold">{presence.name}</span>
                 </div>
                 {presence.cursor && (
-                  <div className="text-gray-300 text-[11px] mt-1">
-                    Cell {String.fromCharCode(65 + presence.cursor.col)}{presence.cursor.row + 1}
+                  <div className="text-gray-300 text-[11px] mt-1.5 font-mono">
+                    Editing: <span className="text-white font-bold">{coordToExcelRef(presence.cursor.row, presence.cursor.col)}</span>
                   </div>
                 )}
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
@@ -76,7 +77,7 @@ export const PresenceBar = ({ presences, currentUser }: PresenceBarProps) => {
         )}
 
         {others.length === 0 && (
-          <p className="px-2 text-[11px] text-gray-400 italic whitespace-nowrap">Editing alone</p>
+          <p className="px-2 text-[11px] text-gray-400 italic whitespace-nowrap">You are alone</p>
         )}
       </div>
     </div>

@@ -43,7 +43,9 @@ export default function DocPage() {
       ...(currentCell?.format || {}),
       [formatKey]: value,
     };
-    updateCell(activeCell.row, activeCell.col, currentCell?.value || "", newFormat);
+    // Keep the current value and just update the format
+    const cellValue = currentCell?.value || "";
+    updateCell(activeCell.row, activeCell.col, cellValue, newFormat);
   };
 
   useEffect(() => {

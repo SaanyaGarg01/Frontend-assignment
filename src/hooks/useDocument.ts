@@ -121,12 +121,15 @@ export function useDocument(docId: string, userId: string) {
         ? evaluateFormula(value, updatedCells) 
         : (isNaN(parseFloat(value)) ? value : parseFloat(value));
 
+      // Merge with existing format if no new format is provided
+      const finalFormat = format !== undefined ? format : updatedCells[cellId]?.format;
+
       const newCellData: CellData = {
         value,
         computedValue,
         updatedBy: userId,
         updatedAt: new Date(), // Local timestamp
-        format: format || updatedCells[cellId]?.format
+        format: finalFormat
       };
 
       updatedCells[cellId] = newCellData;
