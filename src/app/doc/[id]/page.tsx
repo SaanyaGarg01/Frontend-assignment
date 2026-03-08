@@ -1,6 +1,6 @@
 "use client";
 
-import { usAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/useAuth";
 import { useDocument } from "@/hooks/useDocument";
 import { usePresence } from "@/hooks/usePresence";
 import { SpreadsheetGrid } from "@/components/SpreadsheetGrid";
