@@ -38,6 +38,28 @@ export const coordToExcelRef = (row: number, col: number): string => {
   return `${colStr}${row + 1}`;
 };
 
+// Helper to extract range values
+const extractRangeValues = (range: string, cells: CellsState, visited: Set<string>): number[] => {
+  const values: number[] = [];
+  if (range.includes(":")) {
+    const [start, end] = range.split(":");
+    const startCoord = excelRefToCoord(start);
+    const endCoord = excelRefToCoord(end);
+
+    if (startCoord && endCoord) {
+      for (let r = Math.min(startCoord.row, endCoord.row); r <= Math.max(startCoord.row, endCoord.row); r++) {
+        for (let c = Math.min(startCoord.col, endCoord.col); c <= Math.max(startCoord.col, endCoord.col); c++) {
+          const cellId = coordToCellId(r, c);
+          const value = getCellValue(cellId, cells, visited);
+          const numValue = typeof value === "number" ? value : parseFloat(value as string) || 0;
+          values.push(numValue);
+        }
+      }
+    }
+  }
+  return values;
+};
+
 export const evaluateFormula = (
   formula: string,
   cells: CellsState,
@@ -45,29 +67,45 @@ export const evaluateFormula = (
 ): string | number => {
   if (!formula.startsWith("=")) return formula;
 
-  const expression = formula.substring(1).toUpperCase();
+  let expression = formula.substring(1).toUpperCase();
 
-  // Basic SUM function support: SUM(A1:A5)
+  // SUM function: SUM(A1:A5)
   const sumMatch = expression.match(/SUM\(([A-Z0-9:]+)\)/);
   if (sumMatch) {
-    const range = sumMatch[1];
-    if (range.includes(":")) {
-      const [start, end] = range.split(":");
-      const startCoord = excelRefToCoord(start);
-      const endCoord = excelRefToCoord(end);
+    const values = extractRangeValues(sumMatch[1], cells, visited);
+    const sum = values.reduce((a, b) => a + b, 0);
+    expression = expression.replace(/SUM\([A-Z0-9:]+\)/, sum.toString());
+  }
 
-      if (startCoord && endCoord) {
-        let sum = 0;
-        for (let r = Math.min(startCoord.row, endCoord.row); r <= Math.max(startCoord.row, endCoord.row); r++) {
-          for (let c = Math.min(startCoord.col, endCoord.col); c <= Math.max(startCoord.col, endCoord.col); c++) {
-            const cellId = coordToCellId(r, c);
-            const value = getCellValue(cellId, cells, visited);
-            sum += typeof value === "number" ? value : parseFloat(value) || 0;
-          }
-        }
-        return sum;
-      }
-    }
+  // AVERAGE/AVG function: AVERAGE(A1:A5) or AVG(A1:A5)
+  const avgMatch = expression.match(/(?:AVERAGE|AVG)\(([A-Z0-9:]+)\)/);
+  if (avgMatch) {
+    const values = extractRangeValues(avgMatch[1], cells, visited);
+    const avg = values.length > 0 ? values.reduce((a, b) => a + b, 0) / values.length : 0;
+    expression = expression.replace(/(?:AVERAGE|AVG)\([A-Z0-9:]+\)/, avg.toString());
+  }
+
+  // COUNT function: COUNT(A1:A5)
+  const countMatch = expression.match(/COUNT\(([A-Z0-9:]+)\)/);
+  if (countMatch) {
+    const values = extractRangeValues(countMatch[1], cells, visited);
+    expression = expression.replace(/COUNT\([A-Z0-9:]+\)/, values.length.toString());
+  }
+
+  // MIN function: MIN(A1:A5)
+  const minMatch = expression.match(/MIN\(([A-Z0-9:]+)\)/);
+  if (minMatch) {
+    const values = extractRangeValues(minMatch[1], cells, visited);
+    const min = values.length > 0 ? Math.min(...values) : 0;
+    expression = expression.replace(/MIN\([A-Z0-9:]+\)/, min.toString());
+  }
+
+  // MAX function: MAX(A1:A5)
+  const maxMatch = expression.match(/MAX\(([A-Z0-9:]+)\)/);
+  if (maxMatch) {
+    const values = extractRangeValues(maxMatch[1], cells, visited);
+    const max = values.length > 0 ? Math.max(...values) : 0;
+    expression = expression.replace(/MAX\([A-Z0-9:]+\)/, max.toString());
   }
 
   // Replace cell references with their values
@@ -82,7 +120,7 @@ export const evaluateFormula = (
     if (coord) {
       const cellId = coordToCellId(coord.row, coord.col);
       const value = getCellValue(cellId, cells, visited);
-      const numValue = typeof value === "number" ? value : parseFloat(value) || 0;
+      const numValue = typeof value === "number" ? value : parseFloat(value as string) || 0;
       evaluatedExpr = evaluatedExpr.split(ref).join(numValue.toString());
     }
   }

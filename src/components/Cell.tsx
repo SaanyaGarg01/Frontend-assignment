@@ -15,6 +15,7 @@ interface CellProps {
   onSelect: (row: number, col: number) => void;
   onUpdate: (row: number, col: number, value: string) => void;
   onNavigate: (direction: string) => void;
+  height?: number;
 }
 
 export const Cell = React.memo(({
@@ -27,6 +28,7 @@ export const Cell = React.memo(({
   onSelect,
   onUpdate,
   onNavigate,
+  height = 32,
 }: CellProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState(data?.value || "");
@@ -111,6 +113,10 @@ export const Cell = React.memo(({
         data?.format?.textAlign === "center" && "justify-center",
         data?.format?.textAlign === "right" && "justify-end",
       )}
+      style={{
+        color: data?.format?.color || undefined,
+        backgroundColor: data?.format?.backgroundColor ? `${data.format.backgroundColor}20` : undefined,
+      }}
       tabIndex={0}
       onKeyDown={handleKeyDown}
     >

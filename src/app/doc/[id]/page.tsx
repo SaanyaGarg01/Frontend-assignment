@@ -1,6 +1,6 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { usAuth } from "@/hooks/useAuth";
 import { useDocument } from "@/hooks/useDocument";
 import { usePresence } from "@/hooks/usePresence";
 import { SpreadsheetGrid } from "@/components/SpreadsheetGrid";
@@ -10,6 +10,7 @@ import { DocSkeleton } from "@/components/Skeletons";
 import { FormulaBar } from "@/components/FormulaBar";
 import { ActivityPanel } from "@/components/ActivityPanel";
 import { useActivity } from "@/hooks/useActivity";
+import { exportToCSV, exportToJSON, exportToHTML, exportToExcel } from "@/lib/utils";
 import { Loader2, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
@@ -50,6 +51,52 @@ export default function DocPage() {
       router.push("/dashboard");
     }
   }, [authLoading, user, router]);
+
+  const handleExport = (format: "csv" | "json" | "html" | "excel") => {
+    if (!cells || !document) return;
+    
+    const title = document.title || "spreadsheet";
+    
+    switch(format) {
+      case "csv":
+        exportCSV(cells, title);
+        break;
+      case "json":
+        exportToJSON(cells, title);
+        break;
+      case "html":
+        exportToHTML(cells, title);
+        break;
+      case "excel":
+        exportToExcel(cells, title);
+        break;
+    }
+  };
+
+  const exportCSV = (cellsData: any, filename: string) => {
+    let csvContent = "";
+    const maxRow = 50;
+    const maxCol = 26;
+
+    for (let r = 0; r < maxRow; r++) {
+      const rowData = [];
+      for (let c = 0; c < maxCol; c++) {
+        const cellData = cellsData[`${r}-${c}`];
+        rowData.push(`"${(cellData?.computedValue ?? "").toString().replace(/"/g, '""')}"`);
+      }
+      csvContent += rowData.join(",") + "\n";
+    }
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = window.document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `${filename}.csv`);
+    link.style.visibility = "hidden";
+    window.document.body.appendChild(link);
+    link.click();
+    window.document.body.removeChild(link);
+  };
 
   const exportToCSV = () => {
     if (!cells) return;
@@ -114,7 +161,7 @@ export default function DocPage() {
             docId={id} 
             title={document.title} 
             writeState={writeState}
-            onExport={exportToCSV}
+            onExportFormat={handleExport}
             activeCell={activeCell}
             activeCellData={cells[`${activeCell.row}-${activeCell.col}`]}
             onFormatCell={handleFormatCell}

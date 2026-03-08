@@ -4,6 +4,7 @@ import React from "react";
 import { Presence, User } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { Users } from "lucide-react";
 
 interface PresenceBarProps {
   presences: Presence[];
@@ -17,51 +18,67 @@ export const PresenceBar = ({ presences, currentUser }: PresenceBarProps) => {
     .sort((a, b) => a.userId.localeCompare(b.userId));
 
   return (
-    <div className="flex -space-x-2 overflow-hidden items-center">
-      <AnimatePresence mode="popLayout">
-        {others.map((presence) => (
-          <motion.div
-            key={presence.userId}
-            initial={{ opacity: 0, scale: 0.5, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 0.5, x: 20 }}
-            className="group relative"
-          >
-            {presence.photoURL ? (
-              <img
-                src={presence.photoURL}
-                alt={presence.name}
-                className="h-8 w-8 rounded-full border-2 border-white ring-1 ring-gray-200"
-                style={{ borderColor: presence.color }}
-              />
-            ) : (
-              <div
-                className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white text-[10px] font-bold text-white shadow-sm"
-                style={{ backgroundColor: presence.color, borderColor: presence.color }}
-              >
-                {presence.name[0].toUpperCase()}
-              </div>
-            )}
-            
-            {/* Tooltip */}
-            <div className="absolute bottom-full left-1/2 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white group-hover:block z-50">
-              {presence.name}
-              {presence.cursor && ` (Cell ${String.fromCharCode(65 + presence.cursor.col)}${presence.cursor.row + 1})`}
-              <div className="absolute top-full left-1/2 -ml-1 border-4 border-transparent border-t-gray-900" />
-            </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+    <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1 text-xs text-gray-500 font-medium">
+        <Users className="h-3.5 w-3.5" />
+        <span>{others.length + (currentUser ? 1 : 0)}</span>
+      </div>
       
-      {others.length > 5 && (
-        <div className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-white bg-gray-100 text-[10px] font-medium text-gray-600 shadow-sm z-10">
-          +{others.length - 5}
-        </div>
-      )}
+      <div className="flex -space-x-2 overflow-hidden items-center bg-gray-50 rounded-full px-2 py-1 border border-gray-200">
+        <AnimatePresence mode="popLayout">
+          {others.map((presence) => (
+            <motion.div
+              key={presence.userId}
+              initial={{ opacity: 0, scale: 0.5, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.5, x: 20 }}
+              className="group relative"
+            >
+              {presence.photoURL ? (
+                <img
+                  src={presence.photoURL}
+                  alt={presence.name}
+                  className="h-6 w-6 rounded-full border-2 border-white ring-1 ring-gray-200 hover:ring-2 hover:ring-offset-1 transition-all"
+                  style={{ borderColor: presence.color }}
+                />
+              ) : (
+                <div
+                  className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white text-[9px] font-bold text-white shadow-sm hover:shadow-md transition-all"
+                  style={{ backgroundColor: presence.color, borderColor: presence.color }}
+                >
+                  {presence.name[0].toUpperCase()}
+                </div>
+              )}
+              
+              {/* Tooltip with Live Indicator */}
+              <div className="absolute bottom-full left-1/2 mb-3 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs text-white group-hover:block z-50 shadow-lg pointer-events-none">
+                <div className="flex items-center gap-2">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="font-semibold">{presence.name}</span>
+                </div>
+                {presence.cursor && (
+                  <div className="text-gray-300 text-[11px] mt-1">
+                    Cell {String.fromCharCode(65 + presence.cursor.col)}{presence.cursor.row + 1}
+                  </div>
+                )}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full">
+                  <div className="border-4 border-transparent border-t-slate-900" />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+        
+        {others.length > 3 && (
+          <div className="flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-gray-200 text-[9px] font-bold text-gray-600 shadow-sm">
+            +{others.length - 3}
+          </div>
+        )}
 
-      {others.length === 0 && (
-        <p className="pl-4 text-xs text-gray-400 italic">Editing alone</p>
-      )}
+        {others.length === 0 && (
+          <p className="px-2 text-[11px] text-gray-400 italic whitespace-nowrap">Editing alone</p>
+        )}
+      </div>
     </div>
   );
 };
